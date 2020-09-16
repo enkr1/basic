@@ -7,6 +7,7 @@ use yii\behaviors\BlameableBehavior;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\bootstrap\Html;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "article".
@@ -23,7 +24,7 @@ use yii\bootstrap\Html;
  * @property User $createdBy
  * @property User $updatedBy
  */
-class Article extends \yii\db\ActiveRecord
+class Article extends \yii\db\ActiveRecord 
 {
     /**
      * {@inheritdoc}
@@ -33,13 +34,12 @@ class Article extends \yii\db\ActiveRecord
         return 'article';
     }
 
-    public function behaviors()
+    public function behaviors() // behaviors of the array
     {
         return [
             TimestampBehavior::class,
             [
-                'class' => BlameableBehavior::class,
-                'updatedByAttribute' => false
+                'class' => BlameableBehavior::class // created_by and updated_by
             ],
             [
                 'class' => SluggableBehavior::class,
@@ -69,14 +69,14 @@ class Article extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'slug' => 'Slug',
-            'body' => 'Body',
-            'created_at' => 'Created At',
-            'created_by' => 'Created By',
-            'updated_at' => 'Updated At',
-            'updated_by' => 'Updated By',
+            'id' => Yii::t('app', 'ID'),
+            'title' => Yii::t('app', 'Title'),
+            'slug' => Yii::t('app', 'Slug'),
+            'body' => Yii::t('app', 'Body'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'created_by' => Yii::t('app', 'Created By'),
+            'updated_at' => Yii::t('app', 'Updated At'),
+            'updated_by' => Yii::t('app', 'Updated By'),
         ];
     }
 

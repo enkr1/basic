@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Article */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Articles', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -15,12 +15,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if (!Yii::$app->user->isGuest) : ?>
         <p>
-            <?= Html::a('Update', ['update', 'slug' => $model->slug], ['class' => 'btn btn-primary pull-right']) ?>
-            <?= Html::a('Delete', ['delete', 'slug' => $model->slug], [
+            <?= Html::a(Yii::t('app', 'Update'), ['update', 'slug' => $model->slug], ['class' => 'btn btn-primary pull-right']) ?>
+            <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'slug' => $model->slug], [
                 'class' => 'btn btn-danger pull-right',
                 'style' => 'margin-right: 1rem;',
                 'data' => [
-                    'confirm' => 'Are you sure you want to delete this item?',
+                    'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
                     'method' => 'post',
                 ],
             ]) ?>
@@ -41,4 +41,17 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
 
+    <?php
+    if (!empty($model->updatedBy->username)) {
+    ?>
+        <p class="text-muted text-right">
+            <small>
+                <i>
+                    <?php echo $model->updatedBy->username ?> edited <?php echo Yii::$app->formatter->asRelativeTime($model->updated_at) ?>
+                </i>
+            </small>
+        </p>
+    <?php
+    }
+    ?>
 </div>

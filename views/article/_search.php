@@ -12,21 +12,21 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
-        'method' => 'get',
+        'method' => 'get'
+        // 'options' => [
+        //     'data-pjax' => 1
+        // ],
     ]); ?>
 
     <?= $form->field($model, 'title') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary pull-right']) ?>
-        <?= Html::resetButton('Reset', [
-            'class' => 'btn btn-outline-secondary pull-right',
-            'style' => 'margin-right: 1rem;'
-        ]) ?>
+        <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary pull-right']) ?>
+        <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-outline-secondary pull-right', 'style' => 'margin-right: 1rem;']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
-    
+
     <br>
     <br>
     <hr>

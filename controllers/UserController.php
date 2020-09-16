@@ -3,8 +3,8 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Article;
-use app\models\ArticleSearch;
+use app\models\User;
+use app\models\UserSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -12,9 +12,9 @@ use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 
 /**
- * ArticleController implements the CRUD actions for Article model.
+ * UserController implements the CRUD actions for User model.
  */
-class ArticleController extends Controller
+class UserController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -23,17 +23,13 @@ class ArticleController extends Controller
     {
         return [
             [
-                // https://www.yiiframework.com/doc/guide/2.0/en/security-authorization
                 'class' => AccessControl::class,
-                'only' => ['create', 'update', 'delete'],
+                'only' => ['view', 'create', 'update', 'delete'],
                 'rules' => [
                     [
-                        'actions' => ['create', 'update', 'delete'],
+                        'actions' => ['view', 'create', 'update', 'delete'],
                         'allow' => true,
-                        'roles' => ['@'] 
-                        // authenticated user
-                        // ?: matches a guest user (not authenticated yet)
-                        // @: matches an authenticated user
+                        'roles' => ['@']
                     ]
                 ]
             ],
@@ -47,44 +43,48 @@ class ArticleController extends Controller
     }
 
     /**
-     * Lists all Article models.
+     * Lists all User models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ArticleSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        if (!Yii::$app->user->isGuest && (Yii::$app->user->identity->role == 1)) {
+            $searchModel = new UserSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+        } else {
+            throw new ForbiddenHttpException("You do not have permission to view this page!");
+        }
     }
 
     /**
-     * Displays a single Article model.
+     * Displays a single User model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($slug)
+    public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($slug),
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new Article model.
+     * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Article();
+        $model = new User();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'slug' => $model->slug]);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -93,22 +93,18 @@ class ArticleController extends Controller
     }
 
     /**
-     * Updates an existing Article model.
+     * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($slug)
+    public function actionUpdate($id)
     {
-        $model = $this->findModel($slug);
-
-        if ($model->created_by !== Yii::$app->user->id) {
-            throw new ForbiddenHttpException("You do not have permission to update this article!");
-        }
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'slug' => $model->slug]);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -117,37 +113,32 @@ class ArticleController extends Controller
     }
 
     /**
-     * Deletes an existing Article model.
+     * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($slug)
+    public function actionDelete($id)
     {
-        $model = $this->findModel($slug);
-
-        if ($model->created_by !== Yii::$app->user->id) {
-            throw new ForbiddenHttpException("You do not have permission to delete this article!");
-        } else {
-            $model->delete();
-        }
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Article model based on its primary key value.
+     * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Article the loaded model
+     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($slug)
+    protected function findModel($id)
     {
-        if (($model = Article::findOne(['slug' => $slug])) !== null) {
+        if (($model = User::findOne($id)) !== null) {
             return $model;
         }
+
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 }

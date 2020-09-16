@@ -41,6 +41,7 @@ AppAsset::register($this);
             'options' => ['class' => 'navbar-nav navbar-right'],
             'items' => [
                 ['label' => 'Home', 'url' => ['/site/index']],
+                (Yii::$app->user->identity->role == 1) ? (['label' => 'User', 'url' => ['/user']]) : '',
                 ['label' => 'Article', 'url' => ['/article/index']],
                 ['label' => 'About', 'url' => ['/site/about']],
                 ['label' => 'Contact', 'url' => ['/site/contact']],
@@ -53,7 +54,7 @@ AppAsset::register($this);
                     . Html::endForm()
                     . '</li>'
                     . '<li class="text" style="color: grey; margin: 1rem auto; transform: translateX(12rem);">'
-                    . 'Hello, '. Yii::$app->user->identity->username
+                    . 'Hello, ' . Yii::$app->user->identity->username
                     . '</li>'),
                 Yii::$app->user->isGuest ? (['label' => 'Sign Up', 'url' => ['/site/signup']]) : ''
             ],
